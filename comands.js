@@ -1,13 +1,15 @@
 // ==================== BOT Controls ====================
 // ==================== App Pet Virtual==================
 
+// ======== Import API ==============
+import {displayResults} from './apis.js';
 
 // ==================== Command List ==================== 
 var listComands = {
     
-    timer: '21:08',
-    clima: '25°',
-    cep: '86320-000',
+    timer: '',
+    clima: '',
+    cep: '',
     
 };
 
@@ -59,6 +61,10 @@ window.addEventListener('keypress', (e) =>
 // ==================== Settings Comands =============
 function comandsSettings()
 {
+
+    let comands = document.querySelector('#comands').value;
+
+
     //===== Timer =======
     let hours = new Date().getHours();
     let minutes = new Date().getMinutes();
@@ -67,12 +73,7 @@ function comandsSettings()
 
 
     //===== Clima =====
-                        //===== Temporary =====
-
-    // let resConfirm = window.prompt('Digite o nome da cidade:');
-
-       
-
+    listComands.clima = displayResults.resClima;
 
     //==== CEP ========
                         //===== Temporary =====
