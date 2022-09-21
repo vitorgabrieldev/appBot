@@ -2,7 +2,7 @@
 // ==================== App Pet Virtual==================
 
 // ======== Import API ==============
-import {displayResults} from './apis.js';
+// import {displayResults} from './apis.js';
 
 // ==================== Command List ==================== 
 var listComands = {
@@ -36,7 +36,7 @@ var controls = {
 
                 comandsSettings();
 
-                let msg = document.querySelector('#msg').innerHTML = listComands[item];
+                let msgReq = document.querySelector('#msg').innerHTML = listComands[item];
 
             };
 
@@ -71,11 +71,59 @@ function comandsSettings()
 
     listComands.timer = `${hours}:${minutes}`;
 
+    // ========== Api Clima ==========
 
-    //===== Clima =====
-    listComands.clima = displayResults.resClima;
+    let comandsClima = document.querySelector('#comands').value;
+    if(comandsClima === "clima")
+    {
+        var reqCity = window.prompt("Digite o nome da cidade:");
+        searchResults(reqCity);
+    };
+    
 
     //==== CEP ========
                         //===== Temporary =====
     listComands.cep = '83320-000 = Congonhinhas-pr';
+};
+
+// ================= API clima (openWeather); ===========================
+
+const apiClima = {
+    key: "64ed82577ced7f69cb1687f0ce536131",
+    base: "https://api.openweathermap.org/data/2.5/",
+    lang: "pt_br",
+    units: "metric"
+};
+
+function searchResults(reqCity) {
+    fetch(`${apiClima.base}weather?q=${reqCity}&lang=${apiClima.lang}&units=${apiClima.units}&APPID=${apiClima.key}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`http error: status ${response.status}`)
+            }
+            return response.json();
+        })
+        .catch(error => {
+            alert(error.message);
+        })
+        .then(response => {
+            displayResults(response, reqCity);
+        });
+};
+
+function displayResults(weather, reqCity) {
+
+    let temperature = `${Math.round(weather.main.temp)}`;
+    
+
+    console.log(weather)
+
+    var resClima = temperature + "°C"; 
+
+    listComands.clima = resClima;
+
+    let msgComands = document.querySelector('#msg').innerHTML = `${reqCity} - ${temperature}°C`;
+
+    let resetValue = document.querySelector('#comands').value = "";
+
 };
