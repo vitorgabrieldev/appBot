@@ -66,15 +66,19 @@ function comandsSettings()
 
 
     //===== Timer =======
-    let hours = new Date().getHours();
-    let minutes = new Date().getMinutes();
+    // let hours = new Date().getHours();
+    // let minutes = new Date().getMinutes();
+
+    let hours = 9;
+    let minutes = 5;
+
+    hours = (hours > 10 ? "0" + hours : hours);
 
     listComands.timer = `${hours}:${minutes}`;
 
     // ========== Api Clima ==========
 
-    let comandsClima = document.querySelector('#comands').value;
-    if(comandsClima === "clima")
+    if(comands === "clima")
     {
         var reqCity = window.prompt("Digite o nome da cidade:");
         searchResults(reqCity);
@@ -83,7 +87,16 @@ function comandsSettings()
 
     //==== CEP ========
                         //===== Temporary =====
-    listComands.cep = '83320-000 = Congonhinhas-pr';
+    if(comands === "cep")
+    {
+        var reqCep = window.prompt("Digite o CEP :");
+        if(reqCep.length == 8 && /^[0-9]+$/.test(reqCep))
+        {
+            apiCep(reqCep);
+        }else {
+            alert(`"${reqCep}" não é um CEP válido`)
+        };
+    };
 };
 
 // ================= API clima (openWeather); ===========================
@@ -115,15 +128,34 @@ function displayResults(weather, reqCity) {
 
     let temperature = `${Math.round(weather.main.temp)}`;
     
-
-    console.log(weather)
-
     var resClima = temperature + "°C"; 
 
     listComands.clima = resClima;
 
+    // ============= Res End ===============
     let msgComands = document.querySelector('#msg').innerHTML = `${reqCity} - ${temperature}°C`;
 
     let resetValue = document.querySelector('#comands').value = "";
+
+};
+
+// ================= API cep (); ===========================
+const apiCep = async(reqCep) => {
+    const cep = reqCep;
+    const urlCep = `http://viacep.com.br/ws/${cep}/json/`;
+
+    const dataMain = await fetch(urlCep);
+    const datasEnd = await dataMain.json();
+
+    if(datasEnd.hasOwnProperty('erro'))
+    {
+        document.querySelector('#msg').innerHTML = `"${reqCep}" não foi encontrado!`;
+
+    } else {
+        // ============= Res End ===============
+        document.querySelector('#msg').innerHTML = datasEnd.localidade;
+    };
+
+    document.querySelector('#comands').value = "";
 
 };
