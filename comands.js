@@ -10,7 +10,14 @@ var listComands = {
     timer: '',
     clima: '',
     cep: '',
+    settings: '',
     
+};
+
+var personalSettings = {
+    name: '',
+    age: '',
+    cityMain: 'defina uma cidade como padrão com "settings"',
 };
 
 // ==================== Main Bot Controls ===============
@@ -27,17 +34,14 @@ var controls = {
 
     comandsGeral: function()
     {
-        let comands = document.querySelector('#comands').value;
+        let comandsReq = document.querySelector('#comands').value;
+        let comands = comandsReq.toLocaleLowerCase();
         
         Object.keys(listComands).forEach(function(item) {
             
             if(item === comands)
             {
-
                 comandsSettings();
-
-                let msgReq = document.querySelector('#msg').innerHTML = listComands[item];
-
             };
 
         });
@@ -62,17 +66,17 @@ window.addEventListener('keypress', (e) =>
 function comandsSettings()
 {
 
-    let comands = document.querySelector('#comands').value;
+    let comandsRes = document.querySelector('#comands').value;
+    let comands = comandsRes.toLocaleLowerCase();
+
 
 
     //===== Timer =======
-    // let hours = new Date().getHours();
-    // let minutes = new Date().getMinutes();
+    let hours = new Date().getHours();
+    let minutes = new Date().getMinutes();
 
-    let hours = 9;
-    let minutes = 5;
-
-    hours = (hours > 10 ? "0" + hours : hours);
+    hours = (hours < 10 ? '0' + hours : hours);
+    minutes = (minutes < 10 ? '0' + minutes : minutes);
 
     listComands.timer = `${hours}:${minutes}`;
 
@@ -80,16 +84,20 @@ function comandsSettings()
 
     if(comands === "clima")
     {
-        var reqCity = window.prompt("Digite o nome da cidade:");
-        searchResults(reqCity);
+        var reqCity = window.prompt("Digite o nome da cidade:", `${SettingsPersonal.cityMain}`);
+        if(reqCity)
+        {
+            searchResults(reqCity);
+        }else {
+            alert(`Digite algo válido.`);
+        };
     };
     
 
     //==== CEP ========
-                        //===== Temporary =====
     if(comands === "cep")
     {
-        var reqCep = window.prompt("Digite o CEP :");
+        var reqCep = window.prompt("Digite o CEP :", `${SettingsPersonal.cityMain}`);
         if(reqCep.length == 8 && /^[0-9]+$/.test(reqCep))
         {
             apiCep(reqCep);
@@ -97,6 +105,23 @@ function comandsSettings()
             alert(`"${reqCep}" não é um CEP válido`)
         };
     };
+
+    //==== Settings ========
+    if(comands === "settings")
+    {
+        var reqSettings = window.prompt("1 - Nome | 2 - Cidade | 3 - Idade");
+
+        if(reqSettings.length == 1 && /^[0-3]$/.test(reqSettings))
+        {
+            SettingsPersonal(reqSettings);
+        } else
+        {
+            alert("Digite algo válido!");
+        }
+        
+    };
+
+
 };
 
 // ================= API clima (openWeather); ===========================
@@ -139,7 +164,7 @@ function displayResults(weather, reqCity) {
 
 };
 
-// ================= API cep (); ===========================
+// ================= API cep (Viacep); ===========================
 const apiCep = async(reqCep) => {
     const cep = reqCep;
     const urlCep = `http://viacep.com.br/ws/${cep}/json/`;
@@ -157,5 +182,41 @@ const apiCep = async(reqCep) => {
     };
 
     document.querySelector('#comands').value = "";
+
+};
+
+// ================= Settings personal; ===========================
+const SettingsPersonal = (reqSettings) =>
+{
+    if(reqSettings == 1)
+    {
+        let newName = window.prompt("Digite como deseja ser chamado :");
+        if(newName)
+        {
+            SettingsPersonal.name = newName;
+
+            alert(`Olá ${newName}`);
+        };
+    };
+    if(reqSettings == 2)
+    {
+        let cityMainReq = window.prompt("Digite qual cidade você deseja usar como padrão :");
+        if(cityMainReq)
+        {
+            SettingsPersonal.cityMain = cityMainReq;
+
+            alert(`A cidade de ${cityMainReq} foi definida como padrão.`);
+        };
+    };
+    if(reqSettings == 3)
+    {
+        let newName = window.prompt("Digite como deseja ser chamado :");
+        if(newName)
+        {
+            SettingsPersonal.name = newName;
+
+            alert(`Olá ${newName}`);
+        };
+    };
 
 };
